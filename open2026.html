@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pool – The Open 2026</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { background:#FFFFFF !important; color:#111; }
+body {
+  font-family:Georgia,serif;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  padding:8px 10px 6px;
+  max-width:430px;
+  margin:0 auto;
+  overflow:hidden;
+  background:#FFFFFF !important;
+}
+.hd { flex-shrink:0; text-align:center; border-bottom:2px solid #7B1728; padding-bottom:5px; margin-bottom:5px; }
+.hd-eye { font:700 8px/1 Arial,sans-serif; letter-spacing:.15em; text-transform:uppercase; color:#7B1728; }
+.hd-title { font:700 20px/1.1 Georgia,serif; color:#111; margin-top:2px; }
+.hd-sub { font:italic 11px/1 Georgia,serif; color:#666; margin-top:1px; }
+.hd-status { font:9px/1 Arial,sans-serif; color:#888; margin-top:3px; }
+.ch { flex-shrink:0; display:flex; align-items:center; padding:0 4px 2px; border-bottom:1px solid #DDD; margin-bottom:2px; }
+.ch span { font:700 8px/1 Arial,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#999; }
+.ch span:first-child { width:22px; }
+.ch span:nth-child(2) { flex:1; }
+.ch span:last-child { width:38px; text-align:center; }
+.rows { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.row { flex:1; display:flex; flex-direction:column; justify-content:center; padding:1px 4px; border-bottom:1px solid #EEE; min-height:0; background:#FFF; }
+.row-top { display:flex; align-items:center; gap:6px; margin-bottom:2px; }
+.bdg { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font:700 10px/1 Arial,sans-serif; flex-shrink:0; border:1.5px solid #DDD; color:#999; background:#F5F5F5; }
+.bdg.r1 { background:#B8922A; border-color:#B8922A; color:#FFF; }
+.bdg.r2 { background:#888; border-color:#888; color:#FFF; }
+.bdg.r3 { background:#A0714A; border-color:#A0714A; color:#FFF; }
+.pname { flex:1; font:700 13px/1 Georgia,serif; color:#111 !important; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tot { width:38px; height:24px; border-radius:4px; border:1.5px solid #DDD; background:#F9F9F9; display:flex; align-items:center; justify-content:center; font:800 13px/1 'Arial Narrow',Arial,sans-serif; color:#999; flex-shrink:0; }
+.tot.u { color:#B3261E; border-color:#EEB4B1; background:#FDF3F2; }
+.tot.e { color:#1A5C30; border-color:#A8D0B0; background:#F2FAF4; }
+.tot.o { color:#333; }
+.picks { display:flex; gap:3px; padding-left:26px; }
+.chip { display:flex; flex-direction:column; align-items:center; gap:1px; flex:1; min-width:0; }
+.cs { height:16px; width:100%; border-radius:3px; border:1px solid #DDD; background:#F7F7F7; display:flex; align-items:center; justify-content:center; font:800 10px/1 'Arial Narrow',Arial,sans-serif; color:#999; }
+.cs.cut { text-decoration:line-through; opacity:.45; }
+.cs.uniq { border-color:#B8922A; background:#FDF7E8; color:#B8922A; }
+.cs.rare { border-color:#2C6F9E; background:#EEF4FA; color:#2C6F9E; }
+.cs.u { color:#B3261E; border-color:#EEB4B1; background:#FDF3F2; }
+.cs.e { color:#1A5C30; border-color:#A8D0B0; background:#F2FAF4; }
+.cs.o { color:#333; }
+.cn { font:8px/1 Arial,sans-serif; text-transform:uppercase; letter-spacing:.02em; color:#555; text-align:center; width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cn.uniq { color:#B8922A; font-weight:700; }
+.cn.rare { color:#2C6F9E; }
+.elim { flex-shrink:0; border-top:1px solid #EEE; padding-top:3px; margin-top:3px; display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
+.elim-lbl { font:700 8px/1 Arial,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#BBB; }
+.elim-n { font:italic 10px/1 Georgia,serif; color:#BBB; text-decoration:line-through; }
+.leg { flex-shrink:0; display:flex; gap:10px; justify-content:center; margin-top:3px; font:8px/1 Arial,sans-serif; color:#AAA; }
+.leg span { display:flex; align-items:center; gap:3px; }
+.dot { width:8px; height:8px; border-radius:2px; display:inline-block; }
+</style>
+</head>
+<body>
+<div class="hd">
+  <div class="hd-eye">Pool de golf &middot; The Open Championship</div>
+  <div class="hd-title">The Open 2026</div>
+  <div class="hd-sub">Royal Portrush</div>
+  <div class="hd-status">⏳ En attente de la Ronde 1</div>
+</div>
+<div class="ch"><span></span><span>Participant</span><span>Total</span></div>
+<div class="rows" id="rows"></div>
+<div class="elim">
+  <span class="elim-lbl">Sans picks ·</span>
+  <span class="elim-n">Gab St-cyr</span>
+  <span class="elim-n">Pa Pouliot</span>
+  <span class="elim-n">Chris Bach</span>
+  <span class="elim-n">Gui Fleury</span>
+</div>
+<div class="leg">
+  <span><div class="dot" style="border:1.5px solid #B8922A;background:#FDF7E8"></div><span style="color:#B8922A">Unique (1)</span></span>
+  <span><div class="dot" style="border:1.5px solid #2C6F9E;background:#EEF4FA"></div><span style="color:#2C6F9E">Rare (2)</span></span>
+  <span><div class="dot" style="border:1px solid #DDD;background:#F7F7F7"></div>Coupé</span>
+</div>
+<script>
+const PC={McIlroy:4,Schauffele:6,Hovland:3,Rose:8,Thomas:1,Lowry:2,Scheffler:3,Rahm:1,MacIntyre:3,Hatton:3,Young:6,Aberg:2,DeChambeau:1,"Tom Kim":1,Fleetwood:1,Henley:1,Morikawa:1,"N.Hojgaard":1};
+
+// ══ SCORES — modifier ici uniquement ══
+const DATA=[
+  {name:"Vince Tourigny",total:null,picks:[{g:"McIlroy",s:null},{g:"Schauffele",s:null},{g:"Hovland",s:null},{g:"Rose",s:null},{g:"Thomas",s:null},{g:"Lowry",s:null}]},
+  {name:"Jay Legault",total:null,picks:[{g:"Scheffler",s:null},{g:"Rahm",s:null},{g:"MacIntyre",s:null},{g:"Hatton",s:null},{g:"Rose",s:null},{g:"Young",s:null}]},
+  {name:"Mike Bach",total:null,picks:[{g:"Scheffler",s:null},{g:"Schauffele",s:null},{g:"Aberg",s:null},{g:"DeChambeau",s:null},{g:"Rose",s:null},{g:"Tom Kim",s:null}]},
+  {name:"Phil boiss",total:null,picks:[{g:"Fleetwood",s:null},{g:"Schauffele",s:null},{g:"Hovland",s:null},{g:"Rose",s:null},{g:"Hatton",s:null},{g:"Young",s:null}]},
+  {name:"Fred Bill",total:null,picks:[{g:"McIlroy",s:null},{g:"Schauffele",s:null},{g:"MacIntyre",s:null},{g:"Rose",s:null},{g:"Hatton",s:null},{g:"Young",s:null}]},
+  {name:"Steve",total:null,picks:[{g:"McIlroy",s:null},{g:"Schauffele",s:null},{g:"Hovland",s:null},{g:"Rose",s:null},{g:"Young",s:null},{g:"Henley",s:null}]},
+  {name:"Félix",total:null,picks:[{g:"Scheffler",s:null},{g:"Morikawa",s:null},{g:"MacIntyre",s:null},{g:"Rose",s:null},{g:"N.Hojgaard",s:null},{g:"Young",s:null}]},
+  {name:"Marcu",total:null,picks:[{g:"McIlroy",s:null},{g:"Schauffele",s:null},{g:"Aberg",s:null},{g:"Rose",s:null},{g:"Young",s:null},{g:"Lowry",s:null}]},
+];
+// ══════════════════════════════════════
+
+function fmt(s){if(s===null)return"—";if(s==="CUT")return"C";if(s===0)return"E";return s>0?"+"+s:""+s;}
+function sc(s){if(s===null||s==="CUT")return"";if(s<0)return"u";if(s===0)return"e";return"o";}
+function cc(s,g){if(s==="CUT")return"cut";const c=PC[g]||99;if(c===1)return"uniq";if(c===2)return"rare";return sc(s);}
+function nc(g){const c=PC[g]||99;if(c===1)return"uniq";if(c===2)return"rare";return"";}
+function bc(r){if(r===1)return"bdg r1";if(r===2)return"bdg r2";if(r===3)return"bdg r3";return"bdg";}
+function ranked(d){
+  const a=d.map(p=>({...p})).sort((a,b)=>{
+    if(a.total===null&&b.total===null)return 0;
+    if(a.total===null)return 1;if(b.total===null)return-1;
+    return a.total-b.total;
+  });
+  let r=1;a.forEach((p,i)=>{
+    if(i>0&&p.total!==null&&p.total===a[i-1].total)p.rank=a[i-1].rank;
+    else p.rank=p.total===null?null:r;r=i+2;
+  });
+  return a;
+}
+function render(){
+  document.getElementById("rows").innerHTML=ranked(DATA).map(p=>`
+    <div class="row">
+      <div class="row-top">
+        <div class="${bc(p.rank)}">${p.rank||"—"}</div>
+        <div class="pname">${p.name}</div>
+        <div class="tot ${sc(p.total)}">${fmt(p.total)}</div>
+      </div>
+      <div class="picks">${p.picks.map(pk=>`
+        <div class="chip">
+          <div class="cs ${cc(pk.s,pk.g)}">${fmt(pk.s)}</div>
+          <div class="cn ${nc(pk.g)}">${pk.g}</div>
+        </div>`).join("")}
+      </div>
+    </div>`).join("");
+}
+render();
+</script>
+</body>
+</html>

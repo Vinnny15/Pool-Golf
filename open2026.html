@@ -136,7 +136,7 @@ body {
   <div class="hd-title">The Open 2026</div>
   <div class="hd-sub">Royal Birkdale · 154e Édition</div>
   <div class="hd-row">
-    <div class="hd-status" id="status">🏌️ Ronde 4 en cours (08h18)<button class="btn-refresh" id="refresh-btn" onclick="refreshScores()">
+    <div class="hd-status" id="status">🏆 Tournoi terminé — Classement final<button class="btn-refresh" id="refresh-btn" onclick="refreshScores()">
       ⟳ Mise à jour
     </button>
   </div>
@@ -199,36 +199,36 @@ const NAME_MAP = {
 // ══ SCORES — mis à jour automatiquement ══
 const DATA = [
   {name:"Vince Tourigny", picks:[
-    {g:"McIlroy",s:-3},{g:"Schauffele",s:-4},{g:"Hovland",s:"CUT"},
-    {g:"Rose",s:"CUT"},{g:"Thomas",s:-1},{g:"Lowry",s:-3}
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"Hovland",s:"CUT"},
+    {g:"Rose",s:"CUT"},{g:"Thomas",s:3},{g:"Lowry",s:-2}
   ]},
   {name:"Jay Legault", picks:[
-    {g:"Scheffler",s:-6},{g:"Rahm",s:-2},{g:"MacIntyre",s:-4},
-    {g:"Hatton",s:5},{g:"Rose",s:"CUT"},{g:"Young",s:-7}
+    {g:"Scheffler",s:-7},{g:"Rahm",s:0},{g:"MacIntyre",s:-2},
+    {g:"Hatton",s:5},{g:"Rose",s:"CUT"},{g:"Young",s:-9}
   ]},
   {name:"Mike Bach", picks:[
-    {g:"Scheffler",s:-6},{g:"Schauffele",s:-4},{g:"Aberg",s:-6},
-    {g:"DeChambeau",s:-6},{g:"Rose",s:"CUT"},{g:"Tom Kim",s:"CUT"}
+    {g:"Scheffler",s:-7},{g:"Schauffele",s:-3},{g:"Aberg",s:-6},
+    {g:"DeChambeau",s:-4},{g:"Rose",s:"CUT"},{g:"Tom Kim",s:"CUT"}
   ]},
   {name:"Phil boiss", picks:[
-    {g:"Fleetwood",s:-5},{g:"Schauffele",s:-4},{g:"Hovland",s:"CUT"},
-    {g:"Rose",s:"CUT"},{g:"Hatton",s:5},{g:"Young",s:-7}
+    {g:"Fleetwood",s:-7},{g:"Schauffele",s:-3},{g:"Hovland",s:"CUT"},
+    {g:"Rose",s:"CUT"},{g:"Hatton",s:5},{g:"Young",s:-9}
   ]},
   {name:"Fred Bill", picks:[
-    {g:"McIlroy",s:-3},{g:"Schauffele",s:-4},{g:"MacIntyre",s:-4},
-    {g:"Rose",s:"CUT"},{g:"Hatton",s:5},{g:"Young",s:-7}
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"MacIntyre",s:-2},
+    {g:"Rose",s:"CUT"},{g:"Hatton",s:5},{g:"Young",s:-9}
   ]},
   {name:"Steve", picks:[
-    {g:"McIlroy",s:-3},{g:"Schauffele",s:-4},{g:"Hovland",s:"CUT"},
-    {g:"Rose",s:"CUT"},{g:"Young",s:-7},{g:"Henley",s:-4}
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"Hovland",s:"CUT"},
+    {g:"Rose",s:"CUT"},{g:"Young",s:-9},{g:"Henley",s:-5}
   ]},
   {name:"Félix", picks:[
-    {g:"Scheffler",s:-6},{g:"Morikawa",s:-4},{g:"MacIntyre",s:-4},
-    {g:"Rose",s:"CUT"},{g:"N.Hojgaard",s:"CUT"},{g:"Young",s:-7}
+    {g:"Scheffler",s:-7},{g:"Morikawa",s:-3},{g:"MacIntyre",s:-2},
+    {g:"Rose",s:"CUT"},{g:"N.Hojgaard",s:"CUT"},{g:"Young",s:-9}
   ]},
   {name:"Marcu", picks:[
-    {g:"McIlroy",s:-3},{g:"Schauffele",s:-4},{g:"Aberg",s:-6},
-    {g:"Rose",s:"CUT"},{g:"Young",s:-7},{g:"Lowry",s:-3}
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"Aberg",s:-6},
+    {g:"Rose",s:"CUT"},{g:"Young",s:-9},{g:"Lowry",s:-2}
   ]},
 ];
 
@@ -347,7 +347,7 @@ async function doRefresh(apiKey) {
     const now = new Date();
     document.getElementById("timestamp").textContent =
       "Mis à jour " + now.toLocaleTimeString("fr-CA", {hour:"2-digit",minute:"2-digit"});
-    document.getElementById("status").textContent = "🏌️ Ronde 4 en cours (08h18)";
+    document.getElementById("status").textContent = "🏆 Tournoi terminé — Classement final";
   } catch(e) {
     showToast("Erreur : " + e.message);
   } finally {

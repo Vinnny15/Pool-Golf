@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pool – The Open 2026</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { background:#FFFFFF !important; color:#111; }
+body {
+  font-family:Georgia,serif;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  padding:8px 10px 6px;
+  max-width:430px;
+  margin:0 auto;
+  overflow:hidden;
+  background:#FFFFFF !important;
+}
+
+/* HEADER */
+.hd { flex-shrink:0; text-align:center; border-bottom:2px solid #7B1728; padding-bottom:4px; margin-bottom:4px; }
+.hd-eye { font:700 8px/1 Arial,sans-serif; letter-spacing:.15em; text-transform:uppercase; color:#7B1728; }
+.hd-title { font:700 19px/1.1 Georgia,serif; color:#111; margin-top:1px; }
+.hd-sub { font:italic 10px/1 Georgia,serif; color:#666; margin-top:1px; }
+.hd-row { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:3px; }
+.hd-status { font:9px/1 Arial,sans-serif; color:#888; }
+.hd-ts { font:8px/1 Arial,sans-serif; color:#BBB; }
+
+/* REFRESH BUTTON */
+.btn-refresh {
+  display:inline-flex; align-items:center; gap:4px;
+  background:#7B1728; color:#FFF;
+  border:none; border-radius:12px;
+  padding:4px 10px;
+  font:700 9px/1 Arial,sans-serif; letter-spacing:.05em;
+  cursor:pointer; flex-shrink:0;
+  transition:background .2s;
+}
+.btn-refresh:hover { background:#9B2335; }
+.btn-refresh:disabled { background:#CCC; cursor:not-allowed; }
+.spin { display:inline-block; animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* COL HEADERS */
+.ch { flex-shrink:0; display:flex; align-items:center; padding:0 4px 2px; border-bottom:1px solid #DDD; margin-bottom:2px; }
+.ch span { font:700 8px/1 Arial,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#999; }
+.ch span:first-child { width:22px; }
+.ch span:nth-child(2) { flex:1; }
+.ch span:last-child { width:38px; text-align:center; }
+
+/* ROWS */
+.rows { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.row { flex:1; display:flex; flex-direction:column; justify-content:center; padding:1px 4px; border-bottom:1px solid #EEE; min-height:0; background:#FFF; }
+.row-top { display:flex; align-items:center; gap:6px; margin-bottom:2px; }
+.bdg { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font:700 10px/1 Arial,sans-serif; flex-shrink:0; border:1.5px solid #DDD; color:#999; background:#F5F5F5; }
+.bdg.r1 { background:#B8922A; border-color:#B8922A; color:#FFF; }
+.bdg.r2 { background:#888; border-color:#888; color:#FFF; }
+.bdg.r3 { background:#A0714A; border-color:#A0714A; color:#FFF; }
+.pname { flex:1; font:700 13px/1 Georgia,serif; color:#111 !important; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pname.out { color:#CCC !important; text-decoration:line-through; }
+.tot { width:38px; height:24px; border-radius:4px; border:1.5px solid #DDD; background:#F9F9F9; display:flex; align-items:center; justify-content:center; font:800 13px/1 'Arial Narrow',Arial,sans-serif; color:#999; flex-shrink:0; }
+.tot.u { color:#B3261E; border-color:#EEB4B1; background:#FDF3F2; }
+.tot.e { color:#1A5C30; border-color:#A8D0B0; background:#F2FAF4; }
+.tot.o { color:#333; }
+.tot.out { color:#CCC; border-color:#EEE; background:#F9F9F9; font-size:9px; }
+.picks { display:flex; gap:3px; padding-left:26px; }
+.chip { display:flex; flex-direction:column; align-items:center; gap:1px; flex:1; min-width:0; }
+.cs { height:16px; width:100%; border-radius:3px; border:1px solid #DDD; background:#F7F7F7; display:flex; align-items:center; justify-content:center; font:800 10px/1 'Arial Narrow',Arial,sans-serif; color:#999; }
+.cs.cut { text-decoration:line-through; opacity:.45; }
+.cs.uniq { border-color:#B8922A; background:#FDF7E8; color:#B8922A; }
+.cs.rare { border-color:#2C6F9E; background:#EEF4FA; color:#2C6F9E; }
+.cs.u { color:#B3261E; border-color:#EEB4B1; background:#FDF3F2; }
+.cs.e { color:#1A5C30; border-color:#A8D0B0; background:#F2FAF4; }
+.cs.o { color:#333; }
+.cn { font:8px/1 Arial,sans-serif; text-transform:uppercase; letter-spacing:.02em; color:#555; text-align:center; width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cn.uniq { color:#B8922A; font-weight:700; }
+.cn.rare { color:#2C6F9E; }
+
+/* ELIMINATED */
+.elim { flex-shrink:0; border-top:1px solid #EEE; padding-top:3px; margin-top:3px; display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
+.elim-lbl { font:700 8px/1 Arial,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#BBB; }
+.elim-n { font:italic 10px/1 Georgia,serif; color:#BBB; text-decoration:line-through; }
+
+/* LEGEND */
+.leg { flex-shrink:0; display:flex; gap:10px; justify-content:center; margin-top:3px; font:8px/1 Arial,sans-serif; color:#AAA; }
+.leg span { display:flex; align-items:center; gap:3px; }
+.dot { width:8px; height:8px; border-radius:2px; display:inline-block; }
+
+/* MODAL */
+.modal-bg {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.5); z-index:100;
+  align-items:center; justify-content:center; padding:20px;
+}
+.modal-bg.show { display:flex; }
+.modal {
+  background:#FFF; border-radius:12px; padding:20px;
+  width:100%; max-width:340px;
+  box-shadow:0 4px 24px rgba(0,0,0,.2);
+}
+.modal h3 { font:700 15px/1.2 Georgia,serif; color:#7B1728; margin-bottom:8px; }
+.modal p { font:12px/1.5 Arial,sans-serif; color:#555; margin-bottom:12px; }
+.modal input {
+  width:100%; padding:8px 10px; border:1.5px solid #DDD;
+  border-radius:6px; font:12px/1 Arial,sans-serif;
+  color:#111; margin-bottom:8px;
+}
+.modal input:focus { outline:none; border-color:#7B1728; }
+.modal-btns { display:flex; gap:8px; }
+.modal-btns button {
+  flex:1; padding:8px; border:none; border-radius:6px;
+  font:700 11px/1 Arial,sans-serif; cursor:pointer;
+}
+.btn-save { background:#7B1728; color:#FFF; }
+.btn-cancel { background:#EEE; color:#555; }
+.modal-link { display:block; text-align:center; font:10px/1 Arial,sans-serif; color:#7B1728; margin-top:8px; }
+
+/* ERROR TOAST */
+.toast {
+  display:none; position:fixed; bottom:20px; left:50%;
+  transform:translateX(-50%);
+  background:#B3261E; color:#FFF;
+  padding:8px 16px; border-radius:20px;
+  font:700 11px/1 Arial,sans-serif;
+  z-index:200; white-space:nowrap;
+}
+.toast.show { display:block; }
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <div class="hd-eye">Pool de golf · The Open Championship</div>
+  <div class="hd-title">The Open 2026</div>
+  <div class="hd-sub">Royal Birkdale · 154e Édition</div>
+  <div class="hd-row">
+    <div class="hd-status" id="status">🏆 Tournoi terminé — Classement final<button class="btn-refresh" id="refresh-btn" onclick="refreshScores()">
+      ⟳ Mise à jour
+    </button>
+  </div>
+  <div class="hd-ts" id="timestamp"></div>
+</div>
+
+<div class="ch"><span></span><span>Participant</span><span>Total</span></div>
+<div class="rows" id="rows"></div>
+
+<div class="elim">
+  <span class="elim-lbl">Sans picks ·</span>
+  <span class="elim-n">Gab St-cyr</span>
+  <span class="elim-n">Pa Pouliot</span>
+  <span class="elim-n">Chris Bach</span>
+  <span class="elim-n">Gui Fleury</span>
+</div>
+
+<div class="leg">
+  <span><div class="dot" style="border:1.5px solid #B8922A;background:#FDF7E8"></div><span style="color:#B8922A">Unique (1)</span></span>
+  <span><div class="dot" style="border:1.5px solid #2C6F9E;background:#EEF4FA"></div><span style="color:#2C6F9E">Rare (2)</span></span>
+  <span><div class="dot" style="border:1px solid #DDD;background:#F7F7F7"></div>Coupé</span>
+</div>
+
+<!-- MODAL CLÉ API -->
+<div class="modal-bg" id="key-modal">
+  <div class="modal">
+    <h3>🔑 Clé API Anthropic</h3>
+    <p>Pour la mise à jour automatique des scores, entrez votre clé API Anthropic. Elle sera sauvegardée sur cet appareil uniquement.</p>
+    <input type="password" id="api-key-input" placeholder="sk-ant-api03-...">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-save" onclick="saveKey()">Enregistrer</button>
+    </div>
+    <a class="modal-link" href="https://console.anthropic.com/settings/keys" target="_blank">→ Obtenir une clé sur console.anthropic.com</a>
+  </div>
+</div>
+
+<!-- TOAST ERREUR -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ COMPTAGE DES PICKS ══
+const PC = {
+  McIlroy:4, Schauffele:6, Hovland:3, Rose:8, Thomas:1, Lowry:2,
+  Scheffler:3, Rahm:1, MacIntyre:3, Hatton:3, Young:6,
+  Aberg:2, DeChambeau:1, "Tom Kim":1, Fleetwood:1,
+  Henley:1, Morikawa:1, "N.Hojgaard":1
+};
+
+// Mapping clé API ↔ nom dans picks
+const NAME_MAP = {
+  MCILROY:"McIlroy", SCHAUFFELE:"Schauffele", HOVLAND:"Hovland",
+  ROSE:"Rose", THOMAS:"Thomas", LOWRY:"Lowry", SCHEFFLER:"Scheffler",
+  RAHM:"Rahm", MACINTYRE:"MacIntyre", HATTON:"Hatton", YOUNG:"Young",
+  ABERG:"Aberg", DECHAMBEAU:"DeChambeau", TOMKIM:"Tom Kim",
+  FLEETWOOD:"Fleetwood", HENLEY:"Henley", MORIKAWA:"Morikawa",
+  NHOJGAARD:"N.Hojgaard"
+};
+
+// ══ SCORES — mis à jour automatiquement ══
+const DATA = [
+  {name:"Vince Tourigny", picks:[
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"Hovland",s:"CUT"},
+    {g:"Rose",s:"CUT"},{g:"Thomas",s:3},{g:"Lowry",s:-2}
+  ]},
+  {name:"Jay Legault", picks:[
+    {g:"Scheffler",s:-7},{g:"Rahm",s:0},{g:"MacIntyre",s:-2},
+    {g:"Hatton",s:5},{g:"Rose",s:"CUT"},{g:"Young",s:-9}
+  ]},
+  {name:"Mike Bach", picks:[
+    {g:"Scheffler",s:-7},{g:"Schauffele",s:-3},{g:"Aberg",s:-6},
+    {g:"DeChambeau",s:-4},{g:"Rose",s:"CUT"},{g:"Tom Kim",s:"CUT"}
+  ]},
+  {name:"Phil boiss", picks:[
+    {g:"Fleetwood",s:-7},{g:"Schauffele",s:-3},{g:"Hovland",s:"CUT"},
+    {g:"Rose",s:"CUT"},{g:"Hatton",s:5},{g:"Young",s:-9}
+  ]},
+  {name:"Fred Bill", picks:[
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"MacIntyre",s:-2},
+    {g:"Rose",s:"CUT"},{g:"Hatton",s:5},{g:"Young",s:-9}
+  ]},
+  {name:"Steve", picks:[
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"Hovland",s:"CUT"},
+    {g:"Rose",s:"CUT"},{g:"Young",s:-9},{g:"Henley",s:-5}
+  ]},
+  {name:"Félix", picks:[
+    {g:"Scheffler",s:-7},{g:"Morikawa",s:-3},{g:"MacIntyre",s:-2},
+    {g:"Rose",s:"CUT"},{g:"N.Hojgaard",s:"CUT"},{g:"Young",s:-9}
+  ]},
+  {name:"Marcu", picks:[
+    {g:"McIlroy",s:-1},{g:"Schauffele",s:-3},{g:"Aberg",s:-6},
+    {g:"Rose",s:"CUT"},{g:"Young",s:-9},{g:"Lowry",s:-2}
+  ]},
+];
+
+// ══ CALCUL TOTAL (4 meilleurs, règle des cuts) ══
+function calcTotal(picks) {
+  const cuts = picks.filter(p => p.s === "CUT").length;
+  if (cuts > 2) return "OUT";
+  const valid = picks.map(p => p.s).filter(s => typeof s === "number");
+  if (!valid.length) return null;
+  const best4 = [...valid].sort((a,b) => a-b).slice(0,4);
+  return best4.reduce((a,b) => a+b, 0);
+}
+
+// ══ RENDER ══
+function fmt(s) {
+  if (s===null) return "—";
+  if (s==="CUT") return "C";
+  if (s==="OUT") return "OUT";
+  if (s===0) return "E";
+  return s>0?"+"+s:""+s;
+}
+function sc(s) {
+  if (s===null||s==="CUT") return "";
+  if (s<0) return "u"; if (s===0) return "e"; return "o";
+}
+function cc(s,g) {
+  if (s==="CUT") return "cut";
+  const c=PC[g]||99;
+  if (c===1) return "uniq"; if (c===2) return "rare";
+  return sc(s);
+}
+function nc(g) { const c=PC[g]||99; return c===1?"uniq":c===2?"rare":""; }
+function bc(r) {
+  if (!r||r==="OUT") return "bdg";
+  return r===1?"bdg r1":r===2?"bdg r2":r===3?"bdg r3":"bdg";
+}
+
+function ranked() {
+  const a = DATA.map(p => ({...p, total:calcTotal(p.picks)}));
+  a.sort((a,b) => {
+    if (a.total==="OUT") return 1; if (b.total==="OUT") return -1;
+    if (a.total===null&&b.total===null) return 0;
+    if (a.total===null) return 1; if (b.total===null) return -1;
+    return a.total-b.total;
+  });
+  let r=1;
+  a.forEach((p,i) => {
+    if (p.total==="OUT"||p.total===null) { p.rank=null; return; }
+    if (i>0&&p.total===a[i-1].total) p.rank=a[i-1].rank;
+    else p.rank=r;
+    r=i+2;
+  });
+  return a;
+}
+
+function render() {
+  document.getElementById("rows").innerHTML = ranked().map(p => {
+    const tot = p.total;
+    const isOut = tot==="OUT";
+    const totCls = "tot"+(isOut?" out":tot===null?"":tot<0?" u":tot===0?" e":" o");
+    const chips = p.picks.map(pk => `
+      <div class="chip">
+        <div class="cs ${cc(pk.s,pk.g)}">${fmt(pk.s)}</div>
+        <div class="cn ${nc(pk.g)}">${pk.g}</div>
+      </div>`).join("");
+    return `
+      <div class="row">
+        <div class="row-top">
+          <div class="${bc(p.rank)}">${p.rank||"—"}</div>
+          <div class="pname${isOut?" out":""}">${p.name}</div>
+          <div class="${totCls}">${fmt(tot)}</div>
+        </div>
+        <div class="picks">${chips}</div>
+      </div>`;
+  }).join("");
+}
+
+// ══ MISE À JOUR AUTOMATIQUE ══
+function showModal() {
+  document.getElementById("key-modal").classList.add("show");
+  setTimeout(() => document.getElementById("api-key-input").focus(), 100);
+}
+function closeModal() {
+  document.getElementById("key-modal").classList.remove("show");
+}
+function saveKey() {
+  const key = document.getElementById("api-key-input").value.trim();
+  if (!key.startsWith("sk-ant")) { showToast("Clé invalide (doit commencer par sk-ant)"); return; }
+  localStorage.setItem("anthropic_key", key);
+  closeModal();
+  doRefresh(key);
+}
+
+function showToast(msg, duration=4000) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), duration);
+}
+
+async function refreshScores() {
+  const key = localStorage.getItem("anthropic_key");
+  if (!key) { showModal(); return; }
+  await doRefresh(key);
+}
+
+async function doRefresh(apiKey) {
+  const btn = document.getElementById("refresh-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⟳</span> Chargement…';
+
+  try {
+    const scores = await fetchScoresFromClaude(apiKey);
+    applyScores(scores);
+    render();
+    const now = new Date();
+    document.getElementById("timestamp").textContent =
+      "Mis à jour " + now.toLocaleTimeString("fr-CA", {hour:"2-digit",minute:"2-digit"});
+    document.getElementById("status").textContent = "🏆 Tournoi terminé — Classement final";
+  } catch(e) {
+    showToast("Erreur : " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "⟳ Mise à jour";
+  }
+}
+
+async function fetchScoresFromClaude(apiKey) {
+  const prompt = `Search for the current leaderboard at The Open Championship 2026 at Royal Birkdale (154th Open, July 2026).
+
+Find the total score vs par for each of these golfers and return ONLY a JSON object, no other text, no markdown:
+
+{"MCILROY":null,"SCHAUFFELE":null,"HOVLAND":null,"ROSE":null,"THOMAS":null,"LOWRY":null,"SCHEFFLER":null,"RAHM":null,"MACINTYRE":null,"HATTON":null,"YOUNG":null,"ABERG":null,"DECHAMBEAU":null,"TOMKIM":null,"FLEETWOOD":null,"HENLEY":null,"MORIKAWA":null,"NHOJGAARD":null}
+
+Replace null with: an integer (e.g. -3, 0, 2) for score vs par, "CUT" if they missed the cut, or null if they haven't teed off yet. Return ONLY the JSON object.`;
+
+  let messages = [{ role:"user", content:prompt }];
+
+  for (let i=0; i<10; i++) {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "x-api-key": apiKey,
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true"
+      },
+      body: JSON.stringify({
+        model:"claude-haiku-4-5-20251001",
+        max_tokens:600,
+        tools:[{type:"web_search_20250305",name:"web_search"}],
+        messages
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.error?.message || `Erreur API ${res.status}`);
+    }
+
+    const data = await res.json();
+    messages.push({role:"assistant", content:data.content});
+
+    if (data.stop_reason === "end_turn") {
+      const text = data.content
+        .filter(b => b.type==="text")
+        .map(b => b.text)
+        .join("");
+      const match = text.match(/\{[\s\S]*?\}/);
+      if (!match) throw new Error("Format de réponse inattendu");
+      return JSON.parse(match[0]);
+    }
+
+    if (data.stop_reason === "tool_use") {
+      const results = data.content
+        .filter(b => b.type==="tool_use")
+        .map(b => ({type:"tool_result", tool_use_id:b.id, content:"[]"}));
+      messages.push({role:"user", content:results});
+    }
+  }
+  throw new Error("Trop de requêtes — réessayez");
+}
+
+function applyScores(scores) {
+  DATA.forEach(participant => {
+    participant.picks.forEach(pick => {
+      const key = Object.keys(NAME_MAP).find(k => NAME_MAP[k]===pick.g);
+      if (key && scores[key] !== undefined) pick.s = scores[key];
+    });
+  });
+}
+
+// ══ INIT ══
+render();
+</script>
+</body>
+</html>
